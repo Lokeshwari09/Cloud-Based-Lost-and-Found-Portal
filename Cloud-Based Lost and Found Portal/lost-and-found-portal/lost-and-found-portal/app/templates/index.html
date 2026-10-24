@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Lost &amp; Found Board</h1>
+<p class="sub">Search items reported on campus. Lost something? Report it. Found something? Help it get home.</p>
+
+<form class="filters" method="get">
+  <input type="text" name="q" placeholder="Search title, description, location..." value="{{ q }}">
+  <select name="kind">
+    <option value="">Lost &amp; Found</option>
+    <option value="lost" {{ 'selected' if kind=='lost' }}>Lost only</option>
+    <option value="found" {{ 'selected' if kind=='found' }}>Found only</option>
+  </select>
+  <select name="category">
+    <option value="">All categories</option>
+    {% for c in categories %}<option {{ 'selected' if c==category }}>{{ c }}</option>{% endfor %}
+  </select>
+  <select name="status">
+    <option value="">Any status</option>
+    <option value="open" {{ 'selected' if status=='open' }}>Open</option>
+    <option value="claim_pending" {{ 'selected' if status=='claim_pending' }}>Claim pending</option>
+    <option value="returned" {{ 'selected' if status=='returned' }}>Returned</option>
+  </select>
+  <button type="submit">Search</button>
+</form>
+
+{% if items %}
+<div class="grid">
+  {% for it in items %}
+  <a class="card item" href="{{ url_for('detail', item_id=it.id) }}">
+    {% if it.image %}<img class="thumb" src="{{ image_url(it.image) }}" alt="">
+    {% else %}<div class="thumb">No photo</div>{% endif %}
+    <div>
+      <span class="badge {{ it.kind }}">{{ it.kind|upper }}</span>
+      <span class="badge status {{ it.status }}">{{ it.status.replace('_',' ') }}</span>
+    </div>
+    <strong>{{ it.title }}</strong>
+    <span class="meta">{{ it.category }} &middot; {{ it.location }}</span>
+    <span class="meta">{{ it.event_date }}</span>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card">No items match your search.</div>
+{% endif %}
+{% endblock %}

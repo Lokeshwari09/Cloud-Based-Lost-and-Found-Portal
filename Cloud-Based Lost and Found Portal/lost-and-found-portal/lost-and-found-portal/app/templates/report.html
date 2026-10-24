@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Report an item{% endblock %}
+{% block content %}
+<h1>Report an item</h1>
+<p class="sub">Your email is never shown publicly. Only the admin sees it when verifying claims.</p>
+<form class="card" method="post" enctype="multipart/form-data">
+  <label>I have...</label>
+  <select name="kind" required>
+    <option value="lost"  {{ 'selected' if form.get('kind')=='lost' }}>LOST an item</option>
+    <option value="found" {{ 'selected' if form.get('kind')=='found' }}>FOUND an item</option>
+  </select>
+
+  <label>Item title *</label>
+  <input name="title" required maxlength="100" value="{{ form.get('title','') }}" placeholder="e.g. Black leather wallet">
+
+  <div class="row">
+    <div>
+      <label>Category *</label>
+      <select name="category" required>
+        {% for c in categories %}<option {{ 'selected' if form.get('category')==c }}>{{ c }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Date *</label>
+      <input type="date" name="event_date" required value="{{ form.get('event_date','') }}">
+    </div>
+  </div>
+
+  <label>Location *</label>
+  <input name="location" required maxlength="120" value="{{ form.get('location','') }}" placeholder="Where was it lost / found?">
+
+  <label>Description</label>
+  <textarea name="description" rows="4" placeholder="Colour, brand, marks, contents... (do not reveal everything if you found it - the owner must prove it)">{{ form.get('description','') }}</textarea>
+
+  <div class="row">
+    <div><label>Your name *</label><input name="contact_name" required value="{{ form.get('contact_name','') }}"></div>
+    <div><label>Your email *</label><input type="email" name="contact_email" required value="{{ form.get('contact_email','') }}"></div>
+  </div>
+
+  <label>Photo (optional, max 5 MB)</label>
+  <input type="file" name="image" accept="image/*">
+
+  <p><button type="submit">Submit report</button></p>
+</form>
+{% endblock %}

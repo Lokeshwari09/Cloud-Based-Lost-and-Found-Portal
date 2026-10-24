@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Admin login{% endblock %}
+{% block content %}
+<h1>Admin login</h1>
+<form class="card" method="post" style="max-width:380px">
+  <label>Password</label>
+  <input type="password" name="password" required autofocus>
+  <p><button type="submit">Login</button></p>
+  <p class="meta">Default password for local demo: <code>admin123</code> (change with the ADMIN_PASSWORD environment variable).</p>
+</form>
+{% endblock %}

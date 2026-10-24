@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard{% endblock %}
+{% block content %}
+<div style="display:flex;align-items:center;justify-content:space-between">
+  <h1>Admin dashboard</h1><a href="{{ url_for('admin_logout') }}">Logout</a>
+</div>
+
+<div class="stats">
+  <div class="card stat"><b>{{ stats.total_items }}</b><span>Total items</span></div>
+  <div class="card stat"><b>{{ stats.lost }}</b><span>Lost reports</span></div>
+  <div class="card stat"><b>{{ stats.found }}</b><span>Found reports</span></div>
+  <div class="card stat"><b>{{ stats.returned }}</b><span>Returned to owners</span></div>
+  <div class="card stat"><b>{{ stats.pending_claims }}</b><span>Pending claims</span></div>
+  <div class="card stat"><b>{{ stats.recovery_rate_percent }}%</b><span>Recovery rate</span></div>
+</div>
+<p class="meta">Photo storage backend: <b>{{ stats.storage }}</b></p>
+
+<h2>Claims</h2>
+<div class="card" style="overflow-x:auto">
+{% if claims %}
+<table>
+  <tr><th>#</th><th>Item</th><th>Claimant</th><th>Proof / details</th><th>Status</th><th>Action</th></tr>
+  {% for c in claims %}
+  <tr>
+    <td>{{ c.id }}</td>
+    <td><a href="{{ url_for('detail', item_id=c.item_id) }}">{{ c.item_title }}</a><br>
+        <span class="badge {{ c.item_kind }}">{{ c.item_kind|upper }}</span></td>
+    <td>{{ c.claimant_name }}<br><span class="meta">{{ c.claimant_email }}</span></td>
+    <td>{{ c.proof }}</td>
+    <td>{{ c.status }}</td>
+    <td>
+      {% if c.status == 'pending' %}
+      <form method="post" action="{{ url_for('admin_claim', claim_id=c.id, action='approve') }}" style="display:inline"><button class="ok">Approve</button></form>
+      <form method="post" action="{{ url_for('admin_claim', claim_id=c.id, action='reject') }}" style="display:inline"><button class="danger">Reject</button></form>
+      {% else %}-{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}No claims yet.{% endif %}
+</div>
+{% endblock %}

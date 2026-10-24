@@ -1,0 +1,20 @@
+services:
+  portal:
+    build: .
+    container_name: lost-found-portal
+    ports:
+      - "5000:5000"
+    environment:
+      SECRET_KEY: "change-this-secret"
+      ADMIN_PASSWORD: "admin123"
+      # To store photos in AWS S3, uncomment and set your bucket + credentials:
+      # S3_BUCKET: "your-lost-found-bucket"
+      # AWS_REGION: "ap-south-1"
+      # AWS_ACCESS_KEY_ID: "..."
+      # AWS_SECRET_ACCESS_KEY: "..."
+    volumes:
+      - portal-data:/data      # keeps SQLite DB + uploads across restarts
+    restart: unless-stopped
+
+volumes:
+  portal-data:

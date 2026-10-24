@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Lost &amp; Found Portal{% endblock %}</title>
+<style>
+  :root { --bg:#f5f7fb; --card:#fff; --ink:#1d2433; --muted:#667085; --line:#e4e7ec;
+          --brand:#2457d6; --lost:#c2410c; --found:#15803d; --warn:#b45309; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+         background:var(--bg); color:var(--ink); line-height:1.5; }
+  header { background:var(--brand); color:#fff; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
+  nav { display:flex; align-items:center; gap:18px; padding:14px 0; flex-wrap:wrap; }
+  nav .logo { font-weight:700; font-size:1.15rem; margin-right:auto; color:#fff; text-decoration:none; }
+  nav a { color:#e6edff; text-decoration:none; font-size:.95rem; }
+  nav a:hover { color:#fff; text-decoration:underline; }
+  main { padding:26px 0 60px; }
+  h1 { font-size:1.6rem; margin:0 0 6px; } h2 { font-size:1.15rem; margin:22px 0 10px; }
+  .sub { color:var(--muted); margin-bottom:18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:16px; }
+  .item { display:flex; flex-direction:column; gap:6px; text-decoration:none; color:inherit; }
+  .item:hover { border-color:var(--brand); }
+  .thumb { width:100%; height:140px; object-fit:cover; border-radius:8px; background:#eef1f6;
+           display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:.85rem; }
+  .badge { display:inline-block; padding:2px 10px; border-radius:99px; font-size:.75rem; font-weight:600; color:#fff; }
+  .badge.lost { background:var(--lost); } .badge.found { background:var(--found); }
+  .badge.status { background:#eef1f6; color:var(--ink); }
+  .badge.claim_pending { background:#fef3c7; color:var(--warn); }
+  .badge.returned { background:#dcfce7; color:var(--found); }
+  .meta { color:var(--muted); font-size:.85rem; }
+  form.filters { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  input,select,textarea { font:inherit; padding:9px 11px; border:1px solid var(--line);
+         border-radius:8px; background:#fff; width:100%; }
+  form.filters input, form.filters select { width:auto; flex:1 1 160px; }
+  label { display:block; font-weight:600; font-size:.9rem; margin:12px 0 4px; }
+  button, .btn { background:var(--brand); color:#fff; border:0; padding:10px 18px; border-radius:8px;
+         font:inherit; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; }
+  button.secondary { background:#eef1f6; color:var(--ink); }
+  button.danger { background:#b91c1c; }
+  button.ok { background:var(--found); }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:640px){ .row{grid-template-columns:1fr;} }
+  .flash { padding:11px 14px; border-radius:8px; margin-bottom:14px; }
+  .flash.ok { background:#dcfce7; color:#14532d; } .flash.error { background:#fee2e2; color:#7f1d1d; }
+  table { width:100%; border-collapse:collapse; font-size:.92rem; }
+  th,td { text-align:left; padding:9px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:18px; }
+  .stat b { display:block; font-size:1.7rem; } .stat span { color:var(--muted); font-size:.85rem; }
+  .detail { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  @media(max-width:760px){ .detail{grid-template-columns:1fr;} }
+  .detail img { width:100%; border-radius:10px; }
+  footer { text-align:center; color:var(--muted); font-size:.85rem; padding:20px; }
+</style>
+</head>
+<body>
+<header><div class="wrap"><nav>
+  <a class="logo" href="{{ url_for('index') }}">&#128269; Lost &amp; Found Portal</a>
+  <a href="{{ url_for('index') }}">Browse</a>
+  <a href="{{ url_for('report') }}">Report an item</a>
+  <a href="{{ url_for('admin') }}">Admin</a>
+</nav></div></header>
+<main><div class="wrap">
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in msgs %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</div></main>
+<footer>Cloud-Based Lost and Found Portal &middot; Cloud Computing Project</footer>
+</body>
+</html>

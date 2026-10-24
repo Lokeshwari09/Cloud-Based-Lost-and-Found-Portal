@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ item.title }}{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('index') }}">&larr; Back to board</a></p>
+<div class="detail">
+  <div class="card">
+    {% if item.image %}<img src="{{ image_url(item.image) }}" alt="{{ item.title }}">
+    {% else %}<div class="thumb" style="height:220px">No photo provided</div>{% endif %}
+  </div>
+  <div class="card">
+    <span class="badge {{ item.kind }}">{{ item.kind|upper }}</span>
+    <span class="badge status {{ item.status }}">{{ item.status.replace('_',' ') }}</span>
+    <h1 style="margin-top:10px">{{ item.title }}</h1>
+    <p class="meta">{{ item.category }} &middot; {{ item.location }} &middot; {{ item.event_date }}</p>
+    <p>{{ item.description or 'No description provided.' }}</p>
+    <p class="meta">Reported by {{ item.contact_name }} on {{ item.created_at }}</p>
+  </div>
+</div>
+
+{% if item.status != 'returned' %}
+<h2>{{ 'This is my item - claim it' if item.kind=='found' else 'I found this item' }}</h2>
+<form class="card" method="post" action="{{ url_for('claim', item_id=item.id) }}">
+  <div class="row">
+    <div><label>Your name *</label><input name="claimant_name" required></div>
+    <div><label>Your email *</label><input type="email" name="claimant_email" required></div>
+  </div>
+  <label>{{ 'Proof of ownership *' if item.kind=='found' else 'Where / when did you find it? *' }}</label>
+  <textarea name="proof" rows="3" required placeholder="{{ 'Describe unique marks, contents, purchase details...' if item.kind=='found' else 'Describe where the item is now and how the owner can collect it' }}"></textarea>
+  <p><button type="submit">Submit</button></p>
+</form>
+{% endif %}
+
+<h2>Possible matches</h2>
+{% if matches %}
+<div class="grid">
+  {% for score, m in matches %}
+  <a class="card item" href="{{ url_for('detail', item_id=m.id) }}">
+    <div><span class="badge {{ m.kind }}">{{ m.kind|upper }}</span>
+         <span class="badge status">{{ (score*100)|round|int }}% match</span></div>
+    <strong>{{ m.title }}</strong>
+    <span class="meta">{{ m.category }} &middot; {{ m.location }} &middot; {{ m.event_date }}</span>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card meta">No similar {{ 'found' if item.kind=='lost' else 'lost' }} items yet. Check back later.</div>
+{% endif %}
+
+{% if session.get('admin') %}
+<form method="post" action="{{ url_for('admin_delete', item_id=item.id) }}" style="margin-top:20px"
+      onsubmit="return confirm('Delete this item?')">
+  <button class="danger">Delete item (admin)</button>
+</form>
+{% endif %}
+{% endblock %}
